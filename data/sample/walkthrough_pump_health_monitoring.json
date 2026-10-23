@@ -1,0 +1,142 @@
+{
+ "method": "Each walkthrough comes from questioning the use case's NotebookLM notebook. The notebook's sources are the Seeq use case page, related Seeq pages, and the Seeq Knowledge Base page for every tool used. Formula examples were then checked against the Knowledge Base.",
+ "cases": [
+  {
+   "id": "pump-health-monitoring",
+   "title": "Pump health monitoring",
+   "industry": "Asset health and maintenance",
+   "seeqUrl": "https://www.seeq.com/resources/use-cases/pump-health-monitoring/",
+   "problem": [
+    "A large US oil and gas operator runs hundreds of centrifugal pumps. Pumps were either run until they broke, costing about 10 hours of unplanned downtime per failure plus rush repairs and lost production, or serviced on a fixed calendar, which wasted work on healthy pumps.",
+    "Nobody could see the health of the whole fleet, because hundreds of multi-tag time series are too much for spreadsheets.",
+    "Data available: process signals such as flow, motor power, pressures and vibration in the OSIsoft PI historian; work orders and asset records in Maximo; lab results in the LIMS."
+   ],
+   "solution": "Condition-based monitoring. Clean each pump's signals, keep only the time it is actually running, and measure two things every day: the percentage of running time spent in a poor operating mode, and how far the pump went past its limits. Combine the two into a daily health score for every pump, rank the fleet on a scorecard, and plan maintenance for the pumps that are sliding.",
+   "steps": [
+    {
+     "n": "Remove sensor noise",
+     "tool": "Signal Smoothing (Agile Filter)",
+     "inputs": "Raw flow, vibration or pressure signal from PI",
+     "settings": "Filter type: Seeq Agile Filter. Keep the default window (33 × sample period) to start.",
+     "output": "A smoothed signal",
+     "why": "Noise and dropouts would otherwise trigger false poor-mode alerts later."
+    },
+    {
+     "n": "Fix impossible values",
+     "tool": "Formula",
+     "inputs": "Smoothed flow signal",
+     "settings": "Replace negative flow readings with zero.",
+     "output": "A corrected flow signal",
+     "why": "Flow meters read slightly negative when a pump stops; negative flow breaks later maths.",
+     "formula": "$flow.splice(0, $flow < 0)",
+     "check": "concept"
+    },
+    {
+     "n": "Find when the pump is running",
+     "tool": "Value Search",
+     "inputs": "Corrected flow (or motor power)",
+     "settings": "is greater than 0.5 m³/h; set a short-gap filter so brief blips don't split capsules.",
+     "output": "Condition: Pump Running",
+     "why": "Idle time must be excluded, or a stopped pump looks healthy.",
+     "formula": "$flow.valueSearch(1day, isGreaterThan(0.5 m^3/h))",
+     "check": "verified"
+    },
+    {
+     "n": "Define a poor operating mode",
+     "tool": "Value Search + Composite Condition",
+     "inputs": "Vibration, pressure difference, flow; Pump Running",
+     "settings": "One Value Search per limit (e.g. vibration above its alarm level, flow below minimum flow). Combine with Pump Running using intersection (AND).",
+     "output": "Condition: Poor Operating Mode",
+     "why": "Marks exactly when the pump runs outside its design envelope."
+    },
+    {
+     "n": "Turn events into daily numbers",
+     "tool": "Periodic Condition + Signal from Condition",
+     "inputs": "Poor Operating Mode; violation signal; daily capsules",
+     "settings": "Periodic Condition: Daily, in the site time zone. Signal from Condition statistics: Percent Duration (time in poor mode) and Average or Totalized (size of the violation). Timestamp at capsule start, step interpolation.",
+     "output": "Two daily signals: % time in poor mode, violation magnitude",
+     "why": "A score needs numbers per day, not a scatter of events."
+    },
+    {
+     "n": "See the operating distribution",
+     "tool": "Histogram",
+     "inputs": "Process signal and the operating-mode conditions",
+     "settings": "Aggregate by condition; statistic Percent or Total Duration.",
+     "output": "Chart of time in stopped, good and poor modes",
+     "why": "Shows engineers where each pump spends its life."
+    },
+    {
+     "n": "Compute the health score",
+     "tool": "Formula",
+     "inputs": "The two daily signals from step 5",
+     "settings": "Combine into one score on a 0–100 scale. Seeq does not publish the weights; tune them to your failure history.",
+     "output": "Daily Pump Health Score for each pump",
+     "why": "One comparable number lets you rank hundreds of pumps.",
+     "formula": "100 - ($poorModePercent * 0.5 + $violationMagnitude * 0.5)",
+     "check": "illustrative"
+    },
+    {
+     "n": "Rank the fleet",
+     "tool": "Scorecard Metric",
+     "inputs": "Health Score, daily capsules",
+     "settings": "Value at end of day; colour thresholds, e.g. green ≥ 80, yellow 60–80, red < 60.",
+     "output": "Colour-coded fleet table",
+     "why": "Bad actors stand out at a glance."
+    },
+    {
+     "n": "Publish and keep improving",
+     "tool": "Organizer Topic + Seeq Journal",
+     "inputs": "Worksheets, scorecard, histograms",
+     "settings": "Daily auto-refresh; record each analysis step in the Journal.",
+     "output": "Self-updating fleet dashboard",
+     "why": "Operations, reliability and IT all work from the same trusted numbers."
+    }
+   ],
+   "example": {
+    "caption": "Pump P-101, one day",
+    "rows": [
+     [
+      "Time running (step 3)",
+      "18.0 h"
+     ],
+     [
+      "Time in poor mode (step 4: running AND vibration above 4.5 mm/s)",
+      "3.6 h"
+     ],
+     [
+      "% of running time in poor mode (step 5)",
+      "3.6 ÷ 18.0 = 20.0 %"
+     ],
+     [
+      "Violation magnitude (step 5)",
+      "12.0 % above the vibration limit"
+     ],
+     [
+      "Health score (step 7)",
+      "100 − (20.0 × 0.5 + 12.0 × 0.5) = 84.0"
+     ],
+     [
+      "Scorecard (step 8)",
+      "Green (≥ 80), but trending down"
+     ]
+    ]
+   },
+   "mistakes": [
+    [
+     "Working out percentages over the whole day instead of running time",
+     "If the pump was off for 12 hours, its poor-mode share halves and hides the problem. Always bound the calculations by Pump Running."
+    ],
+    [
+     "Smoothing too hard",
+     "A wide filter flattens the short vibration spikes you are looking for. Start from the default window and overlay raw and smoothed signals before you trust them."
+    ],
+    [
+     "Adding signals with different units",
+     "Formula refuses to add mm/s to °C, and even if it didn't, the result would mean nothing. Convert each indicator to a percentage first, then combine."
+    ]
+   ],
+   "reported": "Lower chance of pump failure and of the associated production loss; maintenance done only when needed; operations and IT aligned on one data set; plans to extend to other critical assets. The page quantifies only the baseline of about 10 hours of downtime per failure.",
+   "assumptions": "Tag names, the 0.5 m³/h running limit, the vibration limit, the score weights and the colour thresholds are not stated by Seeq. They are placeholders to be set per site."
+  }
+ ]
+}

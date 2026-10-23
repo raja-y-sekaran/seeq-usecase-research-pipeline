@@ -1,0 +1,111 @@
+{
+  "sitemap": {
+    "snapshot_date": "2026-10-24",
+    "resource_pages": 433,
+    "by_section": {
+      "use-case": 85,
+      "success-story": 18,
+      "post": 76,
+      "download": 33,
+      "event": 8,
+      "webinar": 34,
+      "video": 179
+    },
+    "september_seed_pages": 424
+  },
+  "discovery": {
+    "new": [
+      "https://www.seeq.com/resources/success-stories/seeq-international-paper-international-papers-dynamic-ai-driven-decision-intelligence-layer/"
+    ],
+    "skipped": [
+      {
+        "url": "https://www.seeq.com/resources/use-cases/minimize-vented-steam-in-dual-boiler-system-draft/",
+        "reason": "draft copy of another page"
+      },
+      {
+        "url": "https://www.seeq.com/wp-content/uploads/2026/08/SB_Top-5-Use-Cases-for-FB.pdf#new_tab",
+        "reason": "file link, not a page"
+      }
+    ],
+    "removed": []
+  },
+  "tracker": {
+    "tracked": 100,
+    "use_cases": 83,
+    "success_stories": 17,
+    "extracted": 99,
+    "notebooks": 82,
+    "decks": 82,
+    "published": 83,
+    "walkthroughs": 78
+  },
+  "walkthroughs": {
+    "cases": 78,
+    "steps": 652,
+    "formula_expressions": 262
+  },
+  "schedule_simulation": {
+    "days_to_clear_backlog": 28,
+    "caps": {
+      "extract": 10,
+      "notebook": 3,
+      "deck": 3
+    }
+  },
+  "label_audit": {
+    "expressions": 262,
+    "recorded": {
+      "verified": 159,
+      "concept": 86,
+      "illustrative": 17
+    },
+    "agreement": 0.95,
+    "confusion": {
+      "verified": {
+        "verified": 154,
+        "concept": 2,
+        "illustrative": 3
+      },
+      "concept": {
+        "verified": 4,
+        "concept": 82,
+        "illustrative": 0
+      },
+      "illustrative": {
+        "verified": 3,
+        "concept": 1,
+        "illustrative": 13
+      }
+    },
+    "distinct_call_shapes": 58,
+    "shapes_with_mixed_labels": {
+      "isGreaterThan(num)": {
+        "verified": 63,
+        "concept": 2,
+        "illustrative": 1
+      },
+      "valueSearch(dur,call)": {
+        "verified": 82,
+        "concept": 3,
+        "illustrative": 1
+      },
+      "isEqualTo(str)": {
+        "verified": 2,
+        "concept": 2
+      },
+      "ln(expr)": {
+        "concept": 1,
+        "illustrative": 1
+      },
+      "valueSearch(dur,call,dur)": {
+        "verified": 17,
+        "concept": 2
+      },
+      "isBetween(num,num)": {
+        "verified": 4,
+        "concept": 2
+      }
+    },
+    "disagreements": 13
+  }
+}

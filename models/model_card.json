@@ -1,0 +1,10 @@
+{
+  "model": "Rule-based label audit for Seeq Formula expressions; no trained weights",
+  "registry": "call shapes (function name + argument kinds) labelled 'Confirmed in Seeq docs' in the walkthroughs, with the walkthroughs that use them",
+  "rules": [
+    "R1 not Seeq Formula -> illustrative",
+    "R2 every call shape confirmed in another walkthrough -> verified, else concept",
+    "R3 plain arithmetic -> verified unless placeholder names or decimal coefficients -> illustrative"
+  ],
+  "limits": "checks consistency between walkthroughs, not correctness against the Seeq Knowledge Base; R3 cannot tell a physical constant (1.013 bar) from an invented weight"
+}

@@ -1,0 +1,24 @@
+{
+ "snapshot_date": "2026-10-24",
+ "source": "https://www.seeq.com/sitemap_index.xml",
+ "note": "URL counts per child sitemap on the snapshot date. The September 2026 seed counted 424 pages in the seven resource sections; 433 on this date.",
+ "resource_sections": {
+  "use-case": 85,
+  "success-story": 18,
+  "post": 76,
+  "download": 33,
+  "event": 8,
+  "webinar": 34,
+  "video": 179
+ },
+ "other_sitemaps": {
+  "page": 99,
+  "leadership": 19,
+  "new": 0,
+  "partner": 32,
+  "playlist": 41,
+  "press": 57,
+  "third-party-event": 2
+ },
+ "resource_total": 433
+}
