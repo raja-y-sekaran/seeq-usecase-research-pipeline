@@ -2,7 +2,7 @@
 
 **Turn Seeq's public library of industrial analytics use cases into a study course: track every page, build a research notebook and a first-year-engineer deck per use case, write a step-by-step "how it is built in Seeq" walkthrough, and check every Formula expression in it against Seeq's own documentation.**
 
-![CI](https://github.com/rajapune-create/seeq-usecase-research-pipeline/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/raja-y-sekaran/seeq-usecase-research-pipeline/actions/workflows/ci.yml/badge.svg)
 
 ![From Seeq's public resource pages to walkthroughs](reports/figures/pipeline_funnel.png)
 
