@@ -156,4 +156,6 @@ This project is not affiliated with or endorsed by Seeq Corporation; "Seeq" is t
 
 Built with Claude Code; design, requirements and validation by Raja (Rajayoganandha Sekaran).
 
+Contact: instruraja@yahoo.com
+
 Licence: MIT (code). Seeq page content belongs to Seeq; this repository links to it and does not reproduce it.
